@@ -6,19 +6,28 @@ jobList = m.parseInfo()
 runningls = []
 queuedls = []
 users = []
+cores = {}
 for j in jobList:
-    users.append(j.getUsername())
+    user = j.getUsername()
+    users.append(user)
     if j.isRunning():
-        runningls.append(j.getUsername())
+        runningls.append(user)
+        #if(user == "therealc"): print "DFDFDF"
+        if(user not in cores): cores[user] = 0
+        cores[user] += j.getNumCores()
     else:
-        queuedls.append(j.getUsername())
+        queuedls.append(user)
         
+#print runningls
 users = u.removeDuplicates(users)
+#print users
 userRunning = u.frequencyDictionary(runningls)
+#print userRunning["therealc"]
 userQueued = u.frequencyDictionary(queuedls)
-#u.printDictionary(usernameDict)
   
 print "####"
+date = commands.getstatusoutput("date +%s")[1]
+
 for user in users:
     print user, 
     
@@ -28,5 +37,8 @@ for user in users:
     try: print userQueued[user],
     except: print 0,
     
-    print commands.getstatusoutput("date +%s")[1]
+    try: print cores[user],
+    except: print 0,
+    
+    print date
 print "####"
